@@ -19,7 +19,7 @@
             "type": "string",
             "metadata": {
                 "description": "The FQDN of the AD Domain created "
-            },
+            }
         },
         "dnsPrefix": {
             "type": "string",
