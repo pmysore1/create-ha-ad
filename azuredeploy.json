@@ -185,9 +185,6 @@
                 "Region": "USV1",
                 "Service": "COLAB"
             },
-            "dependsOn": [
-                "[variables('virtualNetworkName')]"
-            ],
             "properties": {
                 "frontendIPConfigurations": [
                     {
