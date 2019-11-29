@@ -3,16 +3,16 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "adminUsername": {
-            "value": "GEN-UNIQUE"
+            "value": "colab-ad-admin"
         },
         "adminPassword": {
-            "value": "GEN-PASSWORD"
+            "value": "$ept$mber2o1q"
         },
         "dnsPrefix": {
-            "value": "GEN-UNIQUE"
+            "value": "ROLLSROYCE"
         },
         "domainName": {
-            "value": "mydomain.local"
+            "value": "ROLLSROYCEGOV.COM"
         }
     }
 }
