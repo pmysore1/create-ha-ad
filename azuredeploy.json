@@ -86,7 +86,7 @@
         "adLBBE": "LBBE",
         "adPDCRDPNAT": "adPDCRDP",
         "adBDCRDPNAT": "adBDCRDP",
-        "virtualNetworkName": "COLAB-USV1-PRD-MGMT-VNET01",
+        "virtualNetworkName": "COLABUSV1PRDMGMTVNET01",
         "virtualNetworkAddressRange": "10.2.0.0/24",
         "ssSubnetName": "SharedServiceSubnet",
         "ssSubnet": "10.2.0.64/27",
