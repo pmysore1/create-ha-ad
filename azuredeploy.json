@@ -228,22 +228,8 @@
                         }
                     }
                     
-                ],
-                "probe": {
-                    "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('adLBName')), '/probes/lbprobe')]"
-                  },
-              
-                "probes": [
-                    {
-                      "properties": {
-                        "protocol": "Tcp",
-                        "port": 3389,
-                        "intervalInSeconds": 15,
-                        "numberOfProbes": 2
-                      },
-                      "name": "lbprobe"
-                    }
-                  ]
+                ]
+               
             }
         },
         {
