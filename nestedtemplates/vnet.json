@@ -26,7 +26,7 @@
       "metadata": {
         "Description": "The address range of the AD subnet created in the new VNET"
       },
-      "defaultValue": "10.1.0.64/27"
+      "defaultValue": "10.2.0.64/27"
     },
     "ssSubnetName": {
       "type": "string",
@@ -39,7 +39,7 @@
       "metadata": {
         "Description": "The address range of the SharedServices subnet created in the new VNET"
       },
-      "defaultValue": "10.1.0.192/26"
+      "defaultValue": "10.2.0.192/26"
     },
     "location": {
       "type": "string",
