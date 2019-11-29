@@ -702,11 +702,17 @@
                     "virtualNetworkAddressRange": {
                         "value": "[variables('virtualNetworkAddressRange')]"
                     },
-                    "subnetName": {
+                    "adSubnetName": {
                         "value": "[variables('adSubnetName')]"
                     },
-                    "subnetRange": {
+                    "adSubnetRange": {
                         "value": "[variables('adSubnet')]"
+                    },
+                    "ssSubnetName": {
+                        "value": "[variables('ssSubnetName')]"
+                    },
+                    "ssSubnetRange": {
+                        "value": "[variables('ssSubnet')]"
                     },
                     "DNSServerAddress": {
                         "value": [
