@@ -188,6 +188,9 @@
             "type": "Microsoft.Network/loadBalancers",
             "apiVersion": "2016-10-01",
             "location": "[parameters('location')]",
+            "dependsOn": [
+                "Microsoft.Resources/deployments/VNet"
+            ],
             "tags": {
                 "BusinessGroup": "DEF",
                 "Environment": "PRD",
