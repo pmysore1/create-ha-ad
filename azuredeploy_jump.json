@@ -74,8 +74,8 @@
     },
     "variables": {
         "storageAccountType": "Premium_LRS",
-        "adPDCVMName": "adPDC",
-        "adBDCVMName": "adBDC",
+        "jumpVMName1": "adPDC",
+        "jumpVMName2": "adBDC",
         "imagePublisher": "MicrosoftWindowsServer",
         "imageOffer": "WindowsServer",
         "imageSKU": "2016-Datacenter",
@@ -301,7 +301,7 @@
             }
         },
         {
-            "name": "[variables('adPDCVMName')]",
+            "name": "[variables('jumpVMName1')]",
             "type": "Microsoft.Compute/virtualMachines",
             "apiVersion": "2017-03-30",
             "location": "[parameters('location')]",
@@ -324,7 +324,7 @@
                     "id": "[resourceId('Microsoft.Compute/availabilitySets', variables('adAvailabilitySetName'))]"
                 },
                 "osProfile": {
-                    "computerName": "[variables('adPDCVMName')]",
+                    "computerName": "[variables('jumpVMName1')]",
                     "adminUsername": "[parameters('adminUsername')]",
                     "adminPassword": "[parameters('adminPassword')]",
                     "windowsConfiguration": {
@@ -340,7 +340,7 @@
                         "version": "latest"
                     },
                     "osDisk": {
-                        "name": "[concat(variables('adPDCVMName'),'_OSDisk')]",
+                        "name": "[concat(variables('jumpVMName1'),'_OSDisk')]",
                         "caching": "ReadWrite",
                         "createOption": "FromImage",
                         "managedDisk": {
@@ -349,7 +349,7 @@
                     },
                     "dataDisks": [
                         {
-                            "name": "[concat(variables('adPDCVMName'),'_data-disk1')]",
+                            "name": "[concat(variables('jumpVMName1'),'_data-disk1')]",
                             "caching": "None",
                             "diskSizeGB": "[variables('adDataDiskSize')]",
                             "lun": 0,
@@ -375,7 +375,7 @@
                     "apiVersion": "2017-03-30",
                     "location": "[parameters('location')]",
                     "dependsOn": [
-                        "[resourceId('Microsoft.Compute/virtualMachines', variables('adPDCVMName'))]"
+                        "[resourceId('Microsoft.Compute/virtualMachines', variables('jumpVMName1'))]"
                     ],
                     "properties": {
                         "publisher": "Microsoft.Powershell",
@@ -405,10 +405,10 @@
         {
             "type": "Microsoft.Compute/virtualMachines/extensions",
             "apiVersion": "2018-10-01",
-            "name": "[concat(variables('adPDCVMName'), '/IaaSAntimalware')]",
+            "name": "[concat(variables('jumpVMName1'), '/IaaSAntimalware')]",
             "location": "usgovvirginia",
             "dependsOn": [
-                "[resourceId('Microsoft.Compute/virtualMachines', variables('adPDCVMName'))]"
+                "[resourceId('Microsoft.Compute/virtualMachines', variables('jumpVMName1'))]"
             ],
             "properties": {
                 "autoUpgradeMinorVersion": true,
@@ -437,7 +437,7 @@
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2016-09-01",
             "dependsOn": [
-                "[concat('Microsoft.Compute/virtualMachines/', variables('adPDCVMName'),'/extensions/CreateADForest')]"
+                "[concat('Microsoft.Compute/virtualMachines/', variables('jumpVMName1'),'/extensions/CreateADForest')]"
             ],
             "properties": {
                 "mode": "Incremental",
@@ -523,7 +523,7 @@
             }
         },
         {
-            "name": "[variables('adBDCVMName')]",
+            "name": "[variables('jumpVMName2')]",
             "type": "Microsoft.Compute/virtualMachines",
             "apiVersion": "2017-03-30",
             "location": "[parameters('location')]",
@@ -546,7 +546,7 @@
                     "id": "[resourceId('Microsoft.Compute/availabilitySets', variables('adAvailabilitySetName'))]"
                 },
                 "osProfile": {
-                    "computerName": "[variables('adBDCVMName')]",
+                    "computerName": "[variables('jumpVMName2')]",
                     "adminUsername": "[parameters('adminUsername')]",
                     "adminPassword": "[parameters('adminPassword')]",
                     "windowsConfiguration": {
@@ -562,25 +562,14 @@
                         "version": "latest"
                     },
                     "osDisk": {
-                        "name": "[concat(variables('adBDCVMName'),'_osdisk')]",
+                        "name": "[concat(variables('jumpVMName2'),'_osdisk')]",
                         "caching": "ReadWrite",
                         "createOption": "FromImage",
                         "managedDisk": {
                             "storageAccountType": "[variables('storageAccountType')]"
                         }
                     },
-                    "dataDisks": [
-                        {
-                            "name": "[concat(variables('adBDCVMName'),'_data-disk1')]",
-                            "caching": "None",
-                            "diskSizeGB": "[variables('adDataDiskSize')]",
-                            "lun": 0,
-                            "createOption": "Empty",
-                            "managedDisk": {
-                                "storageAccountType": "[variables('storageAccountType')]"
-                            }
-                        }
-                    ]
+                 
                 },
                 "networkProfile": {
                     "networkInterfaces": [
@@ -593,11 +582,11 @@
         },
         {
             "type": "Microsoft.Compute/virtualMachines/extensions",
-            "name": "[concat(variables('adBDCVMName'),'/PrepareBDC')]",
+            "name": "[concat(variables('jumpVMName2'),'/PrepareBDC')]",
             "apiVersion": "2016-03-30",
             "location": "[parameters('location')]",
             "dependsOn": [
-                "[concat('Microsoft.Compute/virtualMachines/', variables('adBDCVMName'))]"
+                "[concat('Microsoft.Compute/virtualMachines/', variables('jumpVMName2'))]"
             ],
             "properties": {
                 "publisher": "Microsoft.Powershell",
@@ -616,10 +605,10 @@
         {
             "type": "Microsoft.Compute/virtualMachines/extensions",
             "apiVersion": "2018-10-01",
-            "name": "[concat(variables('adBDCVMName'), '/IaaSAntimalware')]",
+            "name": "[concat(variables('jumpVMName2'), '/IaaSAntimalware')]",
             "location": "[parameters('location')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Compute/virtualMachines', variables('adBDCVMName'))]"
+                "[resourceId('Microsoft.Compute/virtualMachines', variables('jumpVMName2'))]"
             ],
             "properties": {
                 "autoUpgradeMinorVersion": true,
@@ -648,7 +637,7 @@
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2016-09-01",
             "dependsOn": [
-                "[concat('Microsoft.Compute/virtualMachines/',variables('adBDCVMName'),'/extensions/PrepareBDC')]",
+                "[concat('Microsoft.Compute/virtualMachines/',variables('jumpVMName2'),'/extensions/PrepareBDC')]",
                 "Microsoft.Resources/deployments/UpdateBDCNIC"
             ],
             "properties": {
@@ -658,8 +647,8 @@
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
-                    "adBDCVMName": {
-                        "value": "[variables('adBDCVMName')]"
+                    "jumpVMName2": {
+                        "value": "[variables('jumpVMName2')]"
                     },
                     "location": {
                         "value": "[parameters('location')]"
