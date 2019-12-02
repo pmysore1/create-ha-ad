@@ -63,14 +63,21 @@
             }
         },
         "extensions_IaaSAntimalware_Paths": {
-            "type": "securestring"
+            "type": "securestring",
+            "defaultValue": ""
         },
         "extensions_IaaSAntimalware_Extensions": {
-            "type": "securestring"
+            "type": "securestring",
+            "defaultValue": ""
         },
         "extensions_IaaSAntimalware_Processes": {
-            "type": "securestring"
+            "type": "securestring",
+            "defaultValue": ""
+        },
+        "workspaces_log_analytics_name": {
+            "type": "string"
         }
+        
     },
     "variables": {
         "storageAccountType": "Premium_LRS",
@@ -78,7 +85,7 @@
         "adBDCVMName": "adBDC",
         "imagePublisher": "MicrosoftWindowsServer",
         "imageOffer": "WindowsServer",
-        "imageSKU": "2016-Datacenter",
+        "imageSKU": "2019-Datacenter",
         "adAvailabilitySetName": "ADAvailabiltySet",
         "publicIPAddressName": "ad-lb-pip",
         "adVMSize": "Standard_DS3_v2",
@@ -721,6 +728,21 @@
                         ]
                     }
                 }
+            }
+        },
+        {
+            "type": "microsoft.operationalinsights/workspaces",
+            "apiVersion": "2015-11-01-preview",
+            "name": "[parameters('workspaces_log_analytics_name')]",
+            "dependsOn": [
+                "Microsoft.Resources/deployments/VNet"],
+            "location": "[parameters('location')]",
+            "properties": {
+                "source": "Azure",
+                "sku": {
+                    "name": "pergb2018"
+                },
+                "retentionInDays": 30
             }
         }
     ]
