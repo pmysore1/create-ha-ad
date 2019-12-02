@@ -76,6 +76,9 @@
         },
         "workspaces_log_analytics_name": {
             "type": "string"
+        },
+        "imageSKU": {
+            "type": "string"
         }
         
     },
@@ -85,7 +88,6 @@
         "adBDCVMName": "adBDC",
         "imagePublisher": "MicrosoftWindowsServer",
         "imageOffer": "WindowsServer",
-        "imageSKU": "2019-Datacenter",
         "adAvailabilitySetName": "ADAvailabiltySet",
         "publicIPAddressName": "ad-lb-pip",
         "adVMSize": "Standard_DS3_v2",
@@ -343,7 +345,7 @@
                     "imageReference": {
                         "publisher": "[variables('imagePublisher')]",
                         "offer": "[variables('imageOffer')]",
-                        "sku": "[variables('imageSKU')]",
+                        "sku": "[parameters('imageSKU')]",
                         "version": "latest"
                     },
                     "osDisk": {
@@ -565,7 +567,7 @@
                     "imageReference": {
                         "publisher": "[variables('imagePublisher')]",
                         "offer": "[variables('imageOffer')]",
-                        "sku": "[variables('imageSKU')]",
+                        "sku": "[parameters('imageSKU')]",
                         "version": "latest"
                     },
                     "osDisk": {
