@@ -79,6 +79,22 @@
         },
         "imageSKU": {
             "type": "string"
+        },
+        "omsSku": {
+            "type": "string",
+            "defaultValue": "pergb2018",
+            "allowedValues": [
+              "Free",
+              "Standalone",
+              "PerNode",
+              "pergb2018"
+            ],
+            "metadata": {
+              "description": "this will be you SKU for OMS"
+            }
+          },
+        "tags": {
+            "type": "object"
         }
         
     },
@@ -123,7 +139,13 @@
         "adBDCPreparationModulesURL": "[concat(parameters('_artifactsLocation'),'/DSC/PrepareADBDC.zip', parameters('_artifactsLocationSasToken'))]",
         "adBDCPreparationFunction": "PrepareADBDC.ps1\\PrepareADBDC",
         "adBDCConfigurationModulesURL": "[concat(parameters('_artifactsLocation'),'/DSC/ConfigureADBDC.zip', parameters('_artifactsLocationSasToken'))]",
-        "adBDCConfigurationFunction": "ConfigureADBDC.ps1\\ConfigureADBDC"
+        "adBDCConfigurationFunction": "ConfigureADBDC.ps1\\ConfigureADBDC",
+        "omsSolutions": [
+            "Security",
+            "AzureActivity",
+            "AntiMalware"
+          ],
+        "omsTemplateUri": "[concat(parameters('_artifactsLocation'),'/nestedtemplates/microsoft.loganalytics/workspaces.json',parameters('_artifactsLocationSasToken'))]"
     },
     "resources": [
         {
@@ -191,12 +213,7 @@
             "dependsOn": [
                 "Microsoft.Resources/deployments/VNet"
             ],
-            "tags": {
-                "BusinessGroup": "DEF",
-                "Environment": "PRD",
-                "Region": "USV1",
-                "Service": "COLAB"
-            },
+            "tags": "[parameters('tags')]",
             "properties": {
                 "frontendIPConfigurations": [
                     {
@@ -413,6 +430,32 @@
                     }
                 }
             ]
+        },
+        {
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "name": "[concat(concat(variables('adPDCVMName')),'/OMSExtension')]",
+            "apiVersion": "2017-12-01",
+            "location": "[parameters('location')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Compute/virtualMachines', variables('adPDCVMName'))]",
+                "[concat(variables('vmNames')[copyIndex()])]", "deploy-virus-attack-oms-resource"
+            ],
+            "copy": {
+              "name": "copy-monitoring-agent",
+              "count": 2
+            },
+            "properties": {
+              "publisher": "Microsoft.EnterpriseCloud.Monitoring",
+              "type": "MicrosoftMonitoringAgent",
+              "typeHandlerVersion": "1.0",
+              "autoUpgradeMinorVersion": true,
+              "settings": {
+                "workspaceId": "[reference('deploy-virus-attack-oms-resource').outputs.workspaceId.value]"
+              },
+              "protectedSettings": {
+                "workspaceKey": "[reference('deploy-virus-attack-oms-resource').outputs.workspaceKey.value]"
+              }
+            }
         },
         {
             "type": "Microsoft.Compute/virtualMachines/extensions",
@@ -736,6 +779,34 @@
             }
         },
         {
+            "apiVersion": "2017-05-10",
+            "name": "deploy-log-analytics-workspace",
+            "type": "Microsoft.Resources/deployments",
+            "properties": {
+              "mode": "Incremental",
+              "templateLink": {
+                "uri": "[variables('omsTemplateUri')]"
+              },
+              "parameters": {
+                "omsWorkspaceName": {
+                  "value": "[variables('workspaces_log_analytics_name')]"
+                },
+                "omsSolutionsName": {
+                  "value": "[variables('omsSolutions')]"
+                },
+                "sku": {
+                  "value": "[parameters('omsSku')]"
+                },
+                "location": {
+                  "value": "[parameters('location')]"
+                },
+                "tags": {
+                  "value": "[variables('tags')]"
+                }
+              }
+            }
+        },
+        {
             "type": "microsoft.operationalinsights/workspaces",
             "apiVersion": "2015-11-01-preview",
             "name": "[parameters('workspaces_log_analytics_name')]",
@@ -750,5 +821,19 @@
                 "retentionInDays": 30
             }
         }
-    ]
+    ],
+    "outputs": {
+        "workspaceName":{
+            "type": "string",
+            "value": "[parameters('workspaces_log_analytics_name')]"
+        },
+        "workspaceId":{
+            "type": "string",
+            "value": "[reference(resourceId('Microsoft.OperationalInsights/workspaces/', parameters('workspaces_log_analytics_name')), '2017-04-26-preview').customerId]"
+        },
+        "workspaceKey":{
+            "type": "string",
+            "value": "[listKeys(resourceId('Microsoft.OperationalInsights/workspaces/', parameters('workspaces_log_analytics_name')), '2017-04-26-preview').primarySharedKey]"
+        }
+    }
 }
