@@ -440,20 +440,16 @@
                 "[resourceId('Microsoft.Compute/virtualMachines', variables('adPDCVMName'))]",
                 "[concat(variables('adPDCVMName'), 'deploy-log-analytics-workspace')]"
             ],
-            "copy": {
-              "name": "copy-monitoring-agent",
-              "count": 2
-            },
             "properties": {
               "publisher": "Microsoft.EnterpriseCloud.Monitoring",
               "type": "MicrosoftMonitoringAgent",
               "typeHandlerVersion": "1.0",
               "autoUpgradeMinorVersion": true,
               "settings": {
-                "workspaceId": "[reference('deploy-virus-attack-oms-resource').outputs.workspaceId.value]"
+                "workspaceId": "[reference('deploy-log-analytics-workspace').outputs.workspaceId.value]"
               },
               "protectedSettings": {
-                "workspaceKey": "[reference('deploy-virus-attack-oms-resource').outputs.workspaceKey.value]"
+                "workspaceKey": "[reference('deploy-log-analytics-workspace').outputs.workspaceKey.value]"
               }
             }
         },
