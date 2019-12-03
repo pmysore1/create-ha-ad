@@ -438,7 +438,7 @@
             "location": "[parameters('location')]",
             "dependsOn": [
                 "[resourceId('Microsoft.Compute/virtualMachines', variables('adPDCVMName'))]",
-                "[concat(variables('adPDCVMName'), 'deploy-log-analytics-workspace')]"
+                "[deploy-log-analytics-workspace]"
             ],
             "properties": {
               "publisher": "Microsoft.EnterpriseCloud.Monitoring",
