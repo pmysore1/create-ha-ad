@@ -17,11 +17,12 @@
             "allowedValues": [
               "Free",
               "Standalone",
-              "PerNode"
+              "PerNode",
+              "pergb2018"
             ],
             "defaultValue": "Free",
             "metadata": {
-              "description": "Service Tier: Free, Standalone, or PerNode"
+              "description": "Service Tier: Free, Standalone, or PerNode, pergb2018"
             }
         },
         "dataRetention": {
