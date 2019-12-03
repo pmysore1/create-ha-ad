@@ -430,9 +430,7 @@
                     }
                 }
             ]
-        },
-
-        
+        },        
         {
             "type": "Microsoft.Compute/virtualMachines/extensions",
             "name": "[concat(concat(variables('adPDCVMName')),'/OMSExtension')]",
@@ -780,6 +778,9 @@
             "apiVersion": "2017-05-10",
             "name": "deploy-log-analytics-workspace",
             "type": "Microsoft.Resources/deployments",
+            "dependsOn": [
+                "Microsoft.Resources/deployments/VNet"
+            ],
             "properties": {
               "mode": "Incremental",
               "templateLink": {
