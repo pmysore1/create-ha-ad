@@ -801,22 +801,8 @@
                 }
               }
             }
-        },
-        {
-            "type": "microsoft.operationalinsights/workspaces",
-            "apiVersion": "2015-11-01-preview",
-            "name": "[parameters('workspaces_log_analytics_name')]",
-            "dependsOn": [
-                "Microsoft.Resources/deployments/VNet"],
-            "location": "[parameters('location')]",
-            "properties": {
-                "source": "Azure",
-                "sku": {
-                    "name": "pergb2018"
-                },
-                "retentionInDays": 30
-            }
         }
+        
     ],
     "outputs": {
         "workspaceName":{
