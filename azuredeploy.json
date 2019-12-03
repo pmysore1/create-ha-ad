@@ -431,6 +431,8 @@
                 }
             ]
         },
+
+        
         {
             "type": "Microsoft.Compute/virtualMachines/extensions",
             "name": "[concat(concat(variables('adPDCVMName')),'/OMSExtension')]",
@@ -438,7 +440,7 @@
             "location": "[parameters('location')]",
             "dependsOn": [
                 "[resourceId('Microsoft.Compute/virtualMachines', variables('adPDCVMName'))]",
-                "deploy-log-analytics-workspace"
+                "[resourceId('Microsoft.Resources/deployments', 'deploy-log-analytics-workspace')]"
             ],
             "properties": {
               "publisher": "Microsoft.EnterpriseCloud.Monitoring",
