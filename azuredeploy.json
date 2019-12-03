@@ -461,7 +461,7 @@
             "type": "Microsoft.Compute/virtualMachines/extensions",
             "apiVersion": "2018-10-01",
             "name": "[concat(variables('adPDCVMName'), '/IaaSAntimalware')]",
-            "location": "usgovvirginia",
+            "location": "[parameters('location')]",
             "dependsOn": [
                 "[resourceId('Microsoft.Compute/virtualMachines', variables('adPDCVMName'))]"
             ],
