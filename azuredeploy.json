@@ -788,7 +788,7 @@
               },
               "parameters": {
                 "omsWorkspaceName": {
-                  "value": "[variables('workspaces_log_analytics_name')]"
+                  "value": "[parameters('workspaces_log_analytics_name')]"
                 },
                 "omsSolutionsName": {
                   "value": "[variables('omsSolutions')]"
