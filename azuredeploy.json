@@ -800,7 +800,7 @@
                   "value": "[parameters('location')]"
                 },
                 "tags": {
-                  "value": "[variables('tags')]"
+                  "value": "[parameters('tags')]"
                 }
               }
             }
