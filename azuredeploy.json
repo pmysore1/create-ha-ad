@@ -156,7 +156,7 @@
         "imageOffer": "WindowsServer",
         "adAvailabilitySetName": "[concat(parameters('adVMNamePrefix'),'-','availset')]",
         "publicIPAddressName": "[concat(parameters('projectPrefix'),'-','lb-pip')]",
-        "adVMSize": "parameters('adVMSize')",
+        "adVMSize": "[parameters('adVMSize')]",
         "adLBFE": "LBFE",
         "adLBBE": "LBBE",
         "adPDCRDPNAT": "[concat(parameters('adVMNamePrefix'),'-','1-RDP')]",
@@ -168,9 +168,9 @@
         "adSubnetName": "[parameters('adSubnetName')]",
         "adSubnet": "[parameters('adSubnetCIDR')]",
         "adPDCNicName": "[concat(parameters('adVMNamePrefix'),'-1-nic')]",
-        "adPDCNicIPAddress": "(parameters('dcVM1PrivateIP')",
+        "adPDCNicIPAddress": "[parameters('dcVM1PrivateIP')]",
         "adBDCNicName": "[concat(parameters('adVMNamePrefix'),'-2-nic')]",
-        "adBDCNicIPAddress": "(parameters('dcVM2PrivateIP')",
+        "adBDCNicIPAddress": "[parameters('dcVM2PrivateIP')]",
         "adSubnetRef": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('adSubnetName'))]",
         "ssSubnetRef": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('ssSubnetName'))]",
         "adLBName": "[concat(parameters('projectPrefix'),'-','lb')]",
@@ -320,13 +320,17 @@
             "location": "[parameters('location')]",
             "dependsOn": [
                 "Microsoft.Resources/deployments/VNet",
-                "[variables('adLBName')]"
+                "[variables('adLBName')]",
+                "[concat(variables('nsgName'),'-resource')]"
             ],
             "properties": {
                 "ipConfigurations": [
                     {
                         "name": "ipconfig1",
                         "properties": {
+                            "networkSecurityGroup": {
+                                "id": "[resourceId('Microsoft.Network/networkSecurityGroups',variables('nsgName'))]"
+                            },
                             "privateIPAllocationMethod": "Static",
                             "privateIPAddress": "[variables('adPDCNicIPAddress')]",
                             "subnet": {
@@ -355,7 +359,7 @@
             "dependsOn": [
                 "Microsoft.Resources/deployments/VNet",
                 "[concat('Microsoft.Network/loadBalancers/',variables('adLBName'))]",
-                "[resourceId('Microsoft.Resources/deployments', [concat(variables('nsgName'),'-','-resource')]]"
+                "[concat(variables('nsgName'),'-resource')]"
             ],
             "properties": {
                 "ipConfigurations": [
@@ -398,7 +402,7 @@
             ],
             "properties": {
                 "hardwareProfile": {
-                    "vmSize": "[variables('adVMSize')]"
+                    "vmSize": "[parameters('adVMSize')]"
                 },
                 "availabilitySet": {
                     "id": "[resourceId('Microsoft.Compute/availabilitySets', variables('adAvailabilitySetName'))]"
@@ -875,7 +879,7 @@
         },
         {
             "apiVersion": "2017-05-10",
-            "name": "[concat(variables('nsgName'),'-','-resource')]",
+            "name": "[concat(variables('nsgName'),'-resource')]",
             "type": "Microsoft.Resources/deployments",
             "properties": {
               "mode": "Incremental",
@@ -886,14 +890,11 @@
                 "nsgName": {
                   "value": "[variables('nsgName')]"
                 },
-                "securityRules": {
-                  "value": "[variables('nsgSecurityRules')]"
-                },
                 "location": {
                   "value": "[parameters('location')]"
                 },
                 "tags": {
-                  "value": "[variables('tags')]"
+                  "value": "[parameters('tags')]"
                 },
                 "external_ips": {
                     "value": "[parameters('external_ips')]"

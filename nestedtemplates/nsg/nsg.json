@@ -120,6 +120,7 @@
                     },
                     {
                         "name": "AllowInternetOutBound",
+                        "properties": {
                             "description": "Allow outbound traffic from all VMs to Internet",
                             "protocol": "*",
                             "sourcePortRange": "*",
