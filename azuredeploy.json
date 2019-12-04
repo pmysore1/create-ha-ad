@@ -95,35 +95,85 @@
           },
         "tags": {
             "type": "object"
+         },
+        "nsgNamePrefix": {
+            "type": "string",
+            "defaultValue": "network-security-group",
+            "metadata": {
+                "description": "this will be prefix used for NSG"
+            }   
+        },
+        "projectPrefix": {
+            "type": "string",
+            "defaultValue": "COLAB-PRD-AD",
+            "metadata": {
+                "description": "this prefix used for all resources"
+            }
+        },
+        "adVMNamePrefix": {
+            "type": "string",
+            "defaultValue": "COLAB-PRD-DC",
+            "metadata": {
+                "description": "this prefix used for all VMs"
+            }
+        },
+        "virtualNetworkName": {
+            "type": "string"
+        },
+        "virtualNetworkCIDR": {
+            "type": "string"
+        },
+        "ssSubnetName": {
+            "type": "string"
+        },
+        "ssSubnetCIDR": {
+            "type": "string"
+        },
+        "adSubnetName": {
+            "type": "string"
+        },
+        "adSubnetCIDR": {
+            "type": "string"
+        },
+        "dcVM1PrivateIP": {
+            "type": "string"
+        },
+        "dcVM2PrivateIP": {
+            "type": "string"
+        },
+        "adVMSize": {
+            "type": "string"
+        },
+        "external_ips": {
+            "type": "string"
         }
-        
     },
     "variables": {
         "storageAccountType": "Premium_LRS",
-        "adPDCVMName": "adPDC",
-        "adBDCVMName": "adBDC",
+        "adPDCVMName": "[concat(parameters('adVMNamePrefix'),'-','1')]",
+        "adBDCVMName": "[concat(parameters('adVMNamePrefix'),'-','2')]",
         "imagePublisher": "MicrosoftWindowsServer",
         "imageOffer": "WindowsServer",
-        "adAvailabilitySetName": "ADAvailabiltySet",
-        "publicIPAddressName": "ad-lb-pip",
-        "adVMSize": "Standard_DS3_v2",
+        "adAvailabilitySetName": "[concat(parameters('adVMNamePrefix'),'-','availset')]",
+        "publicIPAddressName": "[concat(parameters('projectPrefix'),'-','lb-pip')]",
+        "adVMSize": "(parameters('adVMSize')",
         "adLBFE": "LBFE",
         "adLBBE": "LBBE",
-        "adPDCRDPNAT": "adPDCRDP",
-        "adBDCRDPNAT": "adBDCRDP",
-        "virtualNetworkName": "COLABUSV1-PRD-MGMT-VNET01",
-        "virtualNetworkAddressRange": "10.2.0.0/24",
-        "ssSubnetName": "SharedServiceSubnet",
-        "ssSubnet": "10.2.0.192/26",
-        "adSubnetName": "ADSubnet",
-        "adSubnet": "10.2.0.64/27",
-        "adPDCNicName": "ADPrimaryDCNic",
-        "adPDCNicIPAddress": "10.2.0.70",
-        "adBDCNicName": "ADBackupDCNic",
-        "adBDCNicIPAddress": "10.2.0.71",
+        "adPDCRDPNAT": "[concat(parameters('adVMNamePrefix'),'-','1-RDP')]",
+        "adBDCRDPNAT": "[concat(parameters('adVMNamePrefix'),'-','2-RDP')]",
+        "virtualNetworkName": "(parameters('virtualNetworkName')",
+        "virtualNetworkAddressRange": "(parameters('virtualNetworkName')",
+        "ssSubnetName": "(parameters('ssSubnetName')",
+        "ssSubnet": "(parameters('ssSubnetCIDR')",
+        "adSubnetName": "(parameters('adSubnetName')",
+        "adSubnet": "(parameters('adSubnetCIDR')",
+        "adPDCNicName": "[concat(parameters('adVMNamePrefix'),'-','1'-nic)]",
+        "adPDCNicIPAddress": "(parameters('dcVM1PrivateIP')",
+        "adBDCNicName": "[concat(parameters('adVMNamePrefix'),'-','2'-nic)]",
+        "adBDCNicIPAddress": "(parameters('dcVM2PrivateIP')",
         "adSubnetRef": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('adSubnetName'))]",
         "ssSubnetRef": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('ssSubnetName'))]",
-        "adLBName": "ADLoadBalancer",
+        "adLBName": "[concat(parameters('projectPrefix'),'-','lb')]",
         "adlbID": "[resourceId('Microsoft.Network/loadBalancers',variables('adLBName'))]",
         "adlbFEConfigID": "[concat(variables('adlbID'),'/frontendIPConfigurations/',variables('adLBFE'))]",
         "adPDCRDPNATRuleID": "[concat(variables('adlbID'),'/inboundNatRules/',variables('adPDCRDPNAT'))]",
@@ -145,7 +195,9 @@
             "AzureActivity",
             "AntiMalware"
           ],
-        "omsTemplateUri": "[concat(parameters('_artifactsLocation'),'/nestedtemplates/microsoft.loganalytics/workspaces.json',parameters('_artifactsLocationSasToken'))]"
+        "omsTemplateUri": "[concat(parameters('_artifactsLocation'),'/nestedtemplates/microsoft.loganalytics/workspaces.json',parameters('_artifactsLocationSasToken'))]",
+        "nsgName": "[concat(parameters('nsgNamePrefix'),'-','nsg')]",
+        "nsgTemplateUri": "[concat(parameters('_artifactsLocation'),'/nestedtemplates/nsg/nsg.json',parameters('_artifactsLocationSasToken'))]"
     },
     "resources": [
         {
@@ -334,12 +386,7 @@
             "type": "Microsoft.Compute/virtualMachines",
             "apiVersion": "2017-03-30",
             "location": "[parameters('location')]",
-            "tags": {
-                "BusinessGroup": "DEF",
-                "Environment": "PRD",
-                "Region": "USV1",
-                "Service": "COLAB"
-            },
+            "tags": "[parameters('tags')]",
             "dependsOn": [
                 "[resourceId('Microsoft.Network/networkInterfaces',variables('adPDCNicName'))]",
                 "[resourceId('Microsoft.Compute/availabilitySets', variables('adAvailabilitySetName'))]",
@@ -578,12 +625,7 @@
             "type": "Microsoft.Compute/virtualMachines",
             "apiVersion": "2017-03-30",
             "location": "[parameters('location')]",
-            "tags": {
-                "BusinessGroup": "DEF",
-                "Environment": "PRD",
-                "Region": "USV1",
-                "Service": "COLAB"
-            },
+            "tags": "[parameters('tags')]",
             "dependsOn": [
                 "[resourceId('Microsoft.Network/networkInterfaces',variables('adBDCNicName'))]",
                 "[resourceId('Microsoft.Compute/availabilitySets', variables('adAvailabilitySetName'))]",
@@ -826,7 +868,35 @@
                 }
               }
             }
-        }
+        },
+        {
+            "apiVersion": "2017-05-10",
+            "name": "[concat(variables('nsgName'),'-','-resource')]",
+            "type": "Microsoft.Resources/deployments",
+            "properties": {
+              "mode": "Incremental",
+              "templateLink": {
+                "uri": "[variables('nsgTemplateUri')]"
+              },
+              "parameters": {
+                "nsgName": {
+                  "value": "[variables('nsgName')]"
+                },
+                "securityRules": {
+                  "value": "[variables('nsgSecurityRules')]"
+                },
+                "location": {
+                  "value": "[parameters('location')]"
+                },
+                "tags": {
+                  "value": "[variables('tags')]"
+                },
+                "external_ips": {
+                    "value": "[parameters('external_ips')]"
+                }
+              }
+            }
+          }
         
     ],
     "outputs": {}
