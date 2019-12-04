@@ -695,6 +695,28 @@
             }
         },
         {
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "name": "[concat(concat(variables('adBDCVMName')),'/OMSExtension')]",
+            "apiVersion": "2017-12-01",
+            "location": "[parameters('location')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Compute/virtualMachines', variables('adBDCVMName'))]",
+                "[resourceId('Microsoft.Resources/deployments', 'deploy-log-analytics-workspace')]"
+            ],
+            "properties": {
+              "publisher": "Microsoft.EnterpriseCloud.Monitoring",
+              "type": "MicrosoftMonitoringAgent",
+              "typeHandlerVersion": "1.0",
+              "autoUpgradeMinorVersion": true,
+              "settings": {
+                "workspaceId": "[reference('deploy-log-analytics-workspace').outputs.workspaceId.value]"
+              },
+              "protectedSettings": {
+                "workspaceKey": "[reference('deploy-log-analytics-workspace').outputs.workspaceKey.value]"
+              }
+            }
+        },
+        {
             "name": "ConfiguringBackupADDomainController",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2016-09-01",
