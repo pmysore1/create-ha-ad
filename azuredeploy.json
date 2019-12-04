@@ -156,17 +156,17 @@
         "imageOffer": "WindowsServer",
         "adAvailabilitySetName": "[concat(parameters('adVMNamePrefix'),'-','availset')]",
         "publicIPAddressName": "[concat(parameters('projectPrefix'),'-','lb-pip')]",
-        "adVMSize": "(parameters('adVMSize')",
+        "adVMSize": "parameters('adVMSize')",
         "adLBFE": "LBFE",
         "adLBBE": "LBBE",
         "adPDCRDPNAT": "[concat(parameters('adVMNamePrefix'),'-','1-RDP')]",
         "adBDCRDPNAT": "[concat(parameters('adVMNamePrefix'),'-','2-RDP')]",
-        "virtualNetworkName": "(parameters('virtualNetworkName')",
-        "virtualNetworkAddressRange": "(parameters('virtualNetworkName')",
-        "ssSubnetName": "(parameters('ssSubnetName')",
-        "ssSubnet": "(parameters('ssSubnetCIDR')",
-        "adSubnetName": "(parameters('adSubnetName')",
-        "adSubnet": "(parameters('adSubnetCIDR')",
+        "virtualNetworkName": "[parameters('virtualNetworkName')]",
+        "virtualNetworkAddressRange": "[parameters('virtualNetworkCIDR')]",
+        "ssSubnetName": "[parameters('ssSubnetName')]",
+        "ssSubnet": "[parameters('ssSubnetCIDR')]",
+        "adSubnetName": "[parameters('adSubnetName')]",
+        "adSubnet": "[parameters('adSubnetCIDR')]",
         "adPDCNicName": "[concat(parameters('adVMNamePrefix'),'-1-nic')]",
         "adPDCNicIPAddress": "(parameters('dcVM1PrivateIP')",
         "adBDCNicName": "[concat(parameters('adVMNamePrefix'),'-2-nic')]",
@@ -355,12 +355,16 @@
             "dependsOn": [
                 "Microsoft.Resources/deployments/VNet",
                 "[concat('Microsoft.Network/loadBalancers/',variables('adLBName'))]"
+                "[resourceId('Microsoft.Resources/deployments', [concat(variables('nsgName'),'-','-resource')]]"
             ],
             "properties": {
                 "ipConfigurations": [
                     {
                         "name": "ipconfig1",
                         "properties": {
+                            "networkSecurityGroup": {
+                                "id": "[resourceId('Microsoft.Network/networkSecurityGroups',variables('nsgName'))]"
+                            },
                             "privateIPAllocationMethod": "Static",
                             "privateIPAddress": "[variables('adBDCNicIPAddress')]",
                             "subnet": {
