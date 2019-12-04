@@ -354,7 +354,7 @@
             "location": "[parameters('location')]",
             "dependsOn": [
                 "Microsoft.Resources/deployments/VNet",
-                "[concat('Microsoft.Network/loadBalancers/',variables('adLBName'))]"
+                "[concat('Microsoft.Network/loadBalancers/',variables('adLBName'))]",
                 "[resourceId('Microsoft.Resources/deployments', [concat(variables('nsgName'),'-','-resource')]]"
             ],
             "properties": {
