@@ -324,13 +324,13 @@
                 "[concat(variables('nsgName'),'-resource')]"
             ],
             "properties": {
+                "networkSecurityGroup": {
+                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups',variables('nsgName'))]"
+                },
                 "ipConfigurations": [
                     {
                         "name": "ipconfig1",
                         "properties": {
-                            "networkSecurityGroup": {
-                                "id": "[resourceId('Microsoft.Network/networkSecurityGroups',variables('nsgName'))]"
-                            },
                             "privateIPAllocationMethod": "Static",
                             "privateIPAddress": "[variables('adPDCNicIPAddress')]",
                             "subnet": {
@@ -362,13 +362,13 @@
                 "[concat(variables('nsgName'),'-resource')]"
             ],
             "properties": {
+                "networkSecurityGroup": {
+                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups',variables('nsgName'))]"
+                },
                 "ipConfigurations": [
                     {
                         "name": "ipconfig1",
                         "properties": {
-                            "networkSecurityGroup": {
-                                "id": "[resourceId('Microsoft.Network/networkSecurityGroups',variables('nsgName'))]"
-                            },
                             "privateIPAllocationMethod": "Static",
                             "privateIPAddress": "[variables('adBDCNicIPAddress')]",
                             "subnet": {
@@ -424,7 +424,7 @@
                         "version": "latest"
                     },
                     "osDisk": {
-                        "name": "[concat(variables('adPDCVMName'),'_OSDisk')]",
+                        "name": "[concat(variables('adPDCVMName'),'-osdisk')]",
                         "caching": "ReadWrite",
                         "createOption": "FromImage",
                         "managedDisk": {
@@ -433,7 +433,7 @@
                     },
                     "dataDisks": [
                         {
-                            "name": "[concat(variables('adPDCVMName'),'_data-disk1')]",
+                            "name": "[concat(variables('adPDCVMName'),'-data-disk1')]",
                             "caching": "None",
                             "diskSizeGB": "[variables('adDataDiskSize')]",
                             "lun": 0,
@@ -663,7 +663,7 @@
                         "version": "latest"
                     },
                     "osDisk": {
-                        "name": "[concat(variables('adBDCVMName'),'_osdisk')]",
+                        "name": "[concat(variables('adBDCVMName'),'-osdisk')]",
                         "caching": "ReadWrite",
                         "createOption": "FromImage",
                         "managedDisk": {
@@ -672,7 +672,7 @@
                     },
                     "dataDisks": [
                         {
-                            "name": "[concat(variables('adBDCVMName'),'_data-disk1')]",
+                            "name": "[concat(variables('adBDCVMName'),'-data-disk1')]",
                             "caching": "None",
                             "diskSizeGB": "[variables('adDataDiskSize')]",
                             "lun": 0,
@@ -887,7 +887,7 @@
                 "uri": "[variables('nsgTemplateUri')]"
               },
               "parameters": {
-                "nsgName": {
+                "nsg_name": {
                   "value": "[variables('nsgName')]"
                 },
                 "location": {
